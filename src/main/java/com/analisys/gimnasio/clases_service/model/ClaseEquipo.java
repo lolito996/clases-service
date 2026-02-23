@@ -34,4 +34,9 @@ public class ClaseEquipo {
 
     private String equipoNombre;
 
+    public ClaseEquipo(Clase clase, Long equipoId, Integer cantidadRequerida) {
+        this.clase = clase;
+        this.equipoId = equipoId;
+        this.cantidadRequerida = cantidadRequerida;
+    }
 }
