@@ -1,5 +1,6 @@
 package com.analisys.gimnasio.clases_service.service;
 
+import com.analisys.gimnasio.clases_service.kafka.OcupacionClaseProducer;
 import com.analisys.gimnasio.clases_service.model.Clase;
 import com.analisys.gimnasio.clases_service.repository.ClaseRepository;
 import org.springframework.stereotype.Service;
@@ -10,9 +11,11 @@ import java.util.List;
 public class ClaseService {
     
     private final ClaseRepository claseRepository;
+    private final OcupacionClaseProducer ocupacionClaseProducer;
 
-    public ClaseService(ClaseRepository claseRepository) {
+    public ClaseService(ClaseRepository claseRepository, OcupacionClaseProducer ocupacionClaseProducer) {
         this.claseRepository = claseRepository;
+        this.ocupacionClaseProducer = ocupacionClaseProducer;
     }
 
     public Clase crearClase(Clase clase) {
@@ -33,5 +36,20 @@ public class ClaseService {
 
     public List<Clase> leerDatosIniciales() {
         return claseRepository.findAll();
+    }
+
+    public Clase actualizarOcupacion(Long claseId, int ocupacionActual) {
+        Clase clase = claseRepository.findById(claseId)
+            .orElseThrow(() -> new IllegalArgumentException("Clase no encontrada con ID: " + claseId));
+
+        if (ocupacionActual < 0 || ocupacionActual > clase.getCapacidadMaxima()) {
+            throw new IllegalArgumentException(
+                "Ocupacion invalida. Debe estar entre 0 y " + clase.getCapacidadMaxima());
+        }
+
+        clase.setOcupacionActual(ocupacionActual);
+        Clase actualizada = claseRepository.save(clase);
+        ocupacionClaseProducer.actualizarOcupacion(String.valueOf(claseId), ocupacionActual);
+        return actualizada;
     }
 }

@@ -162,6 +162,7 @@ public class ClaseEquipmentService {
             clase.getNombre(),
             clase.getHorario(),
             clase.getCapacidadMaxima(),
+            clase.getOcupacionActual(),
             equipos,
             todosDisponibles
         );
@@ -231,6 +232,7 @@ public class ClaseEquipmentService {
                 clase.getNombre(),
                 clase.getHorario(),
                 clase.getCapacidadMaxima(),
+                clase.getOcupacionActual(),
                 equiposReservados,
                 true
             );

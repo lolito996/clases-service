@@ -20,5 +20,6 @@ public class Clase {
     private String nombre;
     private LocalDateTime horario;
     private int capacidadMaxima;
+    private int ocupacionActual;
     private Long entrenadorId; // Referencia al entrenador que imparte la clase
 }

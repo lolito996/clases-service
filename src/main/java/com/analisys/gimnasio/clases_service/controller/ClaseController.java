@@ -1,5 +1,6 @@
 package com.analisys.gimnasio.clases_service.controller;
 
+import com.analisys.gimnasio.clases_service.dto.OcupacionClaseRequest;
 import com.analisys.gimnasio.clases_service.model.Clase;
 import com.analisys.gimnasio.clases_service.service.ClaseService;
 
@@ -97,6 +98,26 @@ public class ClaseController {
         response.put("mensaje", "Datos iniciales obtenidos exitosamente");
         response.put("cantidad", clases.size());
         response.put("clases", clases);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+        summary = "Actualizar ocupacion de una clase",
+        description = "Actualiza la ocupacion actual de una clase y publica el evento en Kafka."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Ocupacion actualizada"),
+        @ApiResponse(responseCode = "400", description = "Datos invalidos"),
+        @ApiResponse(responseCode = "404", description = "Clase no encontrada")
+    })
+    @PostMapping("/{id}/ocupacion")
+    public ResponseEntity<Map<String, Object>> actualizarOcupacion(
+            @Parameter(description = "ID de la clase", required = true) @PathVariable Long id,
+            @RequestBody OcupacionClaseRequest request) {
+        Clase claseActualizada = claseService.actualizarOcupacion(id, request.getOcupacionActual());
+        Map<String, Object> response = new HashMap<>();
+        response.put("mensaje", "Ocupacion actualizada exitosamente");
+        response.put("clase", claseActualizada);
         return ResponseEntity.ok(response);
     }
 }
