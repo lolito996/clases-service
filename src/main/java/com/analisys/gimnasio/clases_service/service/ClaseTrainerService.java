@@ -1,18 +1,20 @@
 package com.analisys.gimnasio.clases_service.service;
 
-import com.analisys.gimnasio.clases_service.client.TrainerServiceClient;
-import com.analisys.gimnasio.clases_service.dto.ClaseConEntrenadorDTO;
-import com.analisys.gimnasio.clases_service.dto.TrainerResponseDTO;
-import com.analisys.gimnasio.clases_service.exception.ClaseNotFoundException;
-import com.analisys.gimnasio.clases_service.exception.TrainerServiceException;
-import com.analisys.gimnasio.clases_service.model.Clase;
-import com.analisys.gimnasio.clases_service.repository.ClaseRepository;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import com.analisys.gimnasio.clases_service.client.TrainerServiceClient;
+import com.analisys.gimnasio.clases_service.dto.ClaseConEntrenadorDTO;
+import com.analisys.gimnasio.clases_service.dto.TrainerResponseDTO;
+import com.analisys.gimnasio.clases_service.exception.ClaseNotFoundException;
+import com.analisys.gimnasio.clases_service.exception.TrainerServiceException;
+import com.analisys.gimnasio.clases_service.messaging.publisher.ClaseTrainerEventsPublisher;
+import com.analisys.gimnasio.clases_service.model.Clase;
+import com.analisys.gimnasio.clases_service.repository.ClaseRepository;
 
 @Service
 public class ClaseTrainerService {
@@ -21,10 +23,11 @@ public class ClaseTrainerService {
 
     private final ClaseRepository claseRepository;
     private final TrainerServiceClient trainerServiceClient;
-
-    public ClaseTrainerService(ClaseRepository claseRepository, TrainerServiceClient trainerServiceClient) {
+    private final ClaseTrainerEventsPublisher claseTrainerEventsPublisher;
+    public ClaseTrainerService(ClaseRepository claseRepository, TrainerServiceClient trainerServiceClient, ClaseTrainerEventsPublisher claseTrainerEventsPublisher) {
         this.claseRepository = claseRepository;
         this.trainerServiceClient = trainerServiceClient;
+        this.claseTrainerEventsPublisher = claseTrainerEventsPublisher;
     }
 
     // asignar un entrenador a una clase
@@ -46,6 +49,7 @@ public class ClaseTrainerService {
         log.info("Entrenador {} ({}) asignado a clase {} ({})", 
                 entrenador.getNombre(), entrenadorId, clase.getNombre(), claseId);
 
+        claseTrainerEventsPublisher.publishEntrenadorAsignado(claseId, entrenadorId);
         return buildClaseConEntrenadorDTO(claseActualizada, entrenador);
     }
 

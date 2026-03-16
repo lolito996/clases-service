@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Servicio que orquesta la integración entre clases y el servicio de equipos.
@@ -74,7 +73,7 @@ public class ClaseEquipmentService {
         
         // Crear la relación
         ClaseEquipo claseEquipo = new ClaseEquipo(clase, equipoId, cantidadRequerida);
-        ClaseEquipo saved = claseEquipoRepository.save(claseEquipo);
+        claseEquipoRepository.save(claseEquipo);
         
         logger.info("Equipo {} agregado exitosamente a clase {}", equipo.getNombre(), clase.getNombre());
         
