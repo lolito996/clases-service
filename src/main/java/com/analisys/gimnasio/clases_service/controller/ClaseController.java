@@ -1,6 +1,7 @@
 package com.analisys.gimnasio.clases_service.controller;
 
 import com.analisys.gimnasio.clases_service.dto.OcupacionClaseRequest;
+import com.analisys.gimnasio.clases_service.dto.HorarioClaseRequest;
 import com.analisys.gimnasio.clases_service.model.Clase;
 import com.analisys.gimnasio.clases_service.service.ClaseService;
 
@@ -117,6 +118,27 @@ public class ClaseController {
         Clase claseActualizada = claseService.actualizarOcupacion(id, request.getOcupacionActual());
         Map<String, Object> response = new HashMap<>();
         response.put("mensaje", "Ocupacion actualizada exitosamente");
+        response.put("clase", claseActualizada);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+        summary = "Actualizar horario de una clase",
+        description = "Actualiza el horario de una clase y publica un evento en RabbitMQ (Pub/Sub)."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Horario actualizado"),
+        @ApiResponse(responseCode = "400", description = "Datos invalidos"),
+        @ApiResponse(responseCode = "404", description = "Clase no encontrada")
+    })
+    @PutMapping("/{id}/horario")
+    public ResponseEntity<Map<String, Object>> actualizarHorario(
+            @Parameter(description = "ID de la clase", required = true) @PathVariable Long id,
+            @RequestBody HorarioClaseRequest request
+    ) {
+        Clase claseActualizada = claseService.actualizarHorario(id, request.getHorario());
+        Map<String, Object> response = new HashMap<>();
+        response.put("mensaje", "Horario actualizado exitosamente");
         response.put("clase", claseActualizada);
         return ResponseEntity.ok(response);
     }
