@@ -19,6 +19,7 @@ public class ClaseResponseDTO {
     private String nombre;
     private LocalDateTime horario;
     private int capacidadMaxima;
+    private int ocupacionActual;
     private List<ClaseEquipoDTO> equiposRequeridos;
     private Boolean equiposDisponibles;
 }

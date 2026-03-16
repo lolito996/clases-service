@@ -51,6 +51,7 @@ public class DataLoader implements CommandLineRunner {
         clase.setNombre(nombre);
         clase.setHorario(horario);
         clase.setCapacidadMaxima(capacidad);
+        clase.setOcupacionActual(0);
         return clase;
     }
 
